@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Peptides"><meta name="robots" content="noindex"><title>Jake's Peptide Schedule</title>
+<style>body{font-family:-apple-system,system-ui,sans-serif;margin:0;padding:16px;background:#0f1720;color:#e8eef4}h1{font-size:22px}h2{font-size:17px;margin-top:24px}.card{background:#1b2633;border-radius:14px;padding:14px;margin:10px 0}.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #2a3846}.row:last-child{border:0}.now{background:#24557a;border-radius:8px;padding:8px}.tag{font-size:12px;color:#9fb3c8}.tabs button{background:#24303d;color:#e8eef4;border:0;border-radius:20px;padding:8px 14px;margin-right:6px}.tabs button.on{background:#3d8bd1}small{color:#9fb3c8}</style></head><body>
+<h1>Peptide Schedule</h1><div class="tag">Daily, before bed · started Oct 17, 2026 · U-100 syringe</div>
+<div class="card" id="today"></div>
+<div class="tabs"><button class="on" onclick="show('ghk',this)">GHK-Cu</button><button onclick="show('cjc',this)">CJC/Ipamorelin</button></div>
+<div id="ghk" class="card"><b>GHK-Cu</b> <small>50 mg + 2 mL = 25 mg/mL</small>
+<div class="row" data-s="2026-10-17" data-e="2026-11-13"><span>Wk 1–4 · Oct 17–Nov 13</span><span>1.0 mg · 4 u</span></div>
+<div class="row" data-s="2026-11-14" data-e="2026-12-11"><span>Wk 5–8 · Nov 14–Dec 11</span><span>1.5 mg · 6 u</span></div>
+<div class="row" data-s="2026-12-12" data-e="2099-01-01"><span>Wk 9–12+ · from Dec 12</span><span>2.0 mg · 8 u</span></div>
+<small>Vial lasts until about Nov 28 at this pace.</small></div>
+<div id="cjc" class="card" style="display:none"><b>CJC-1295 no DAC + Ipamorelin</b> <small>5+5 mg + 2 mL; 1 u ≈ 25 mcg each</small>
+<div class="row" data-s="2026-10-17" data-e="2026-10-30"><span>Wk 1–2 · Oct 17–30</span><span>100 mcg · 4 u</span></div>
+<div class="row" data-s="2026-10-31" data-e="2026-11-13"><span>Wk 3–4 · Oct 31–Nov 13</span><span>150 mcg · 6 u</span></div>
+<div class="row" data-s="2026-11-14" data-e="2026-11-27"><span>Wk 5–6 · Nov 14–27</span><span>200 mcg · 8 u</span></div>
+<div class="row" data-s="2026-11-28" data-e="2026-12-25"><span>Wk 7–10 · Nov 28–Dec 25</span><span>250–300 mcg · 10–12 u</span></div>
+<small>Vial runs out around Nov 20 on this plan.</small></div>
+<script>
+function show(id,b){['ghk','cjc'].forEach(x=>document.getElementById(x).style.display=x==id?'block':'none');document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
+const t=new Date();const iso=t.toISOString().slice(0,10);let txt='',txt2='';
+document.querySelectorAll('#cjc .row').forEach(r=>{if(iso>=r.dataset.s&&iso<=r.dataset.e){r.classList.add('now');txt2=r.lastElementChild.textContent}});
+document.querySelectorAll('#ghk .row').forEach(r=>{if(iso>=r.dataset.s&&iso<=r.dataset.e){r.classList.add('now');txt=r.lastElementChild.textContent}});
+const day=Math.floor((t-new Date('2026-10-17T00:00:00'))/864e5)+1;
+document.getElementById('today').innerHTML='<b>Tonight</b> · Day '+day+'<br>GHK-Cu: '+txt+'<br>CJC/Ipamorelin: '+txt2;
+</script></body></html>
