@@ -1,7 +1,11 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Peptides"><meta name="robots" content="noindex"><title>Jake's Peptide Schedule</title>
-<style>body{font-family:-apple-system,system-ui,sans-serif;margin:0;padding:16px;background:#0f1720;color:#e8eef4}h1{font-size:22px}h2{font-size:17px;margin-top:24px}.card{background:#1b2633;border-radius:14px;padding:14px;margin:10px 0}.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #2a3846}.row:last-child{border:0}.now{background:#24557a;border-radius:8px;padding:8px}.tag{font-size:12px;color:#9fb3c8}.tabs button{background:#24303d;color:#e8eef4;border:0;border-radius:20px;padding:8px 14px;margin-right:6px}.tabs button.on{background:#3d8bd1}small{color:#9fb3c8}</style></head><body>
+<style>body{font-family:-apple-system,system-ui,sans-serif;margin:0;padding:16px;background:#0f1720;color:#e8eef4}h1{font-size:22px}h2{font-size:17px;margin-top:24px}.card{background:#1b2633;border-radius:14px;padding:14px;margin:10px 0}.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #2a3846}.row:last-child{border:0}.now{background:#24557a;border-radius:8px;padding:8px}.tag{font-size:12px;color:#9fb3c8}.tabs button{background:#24303d;color:#e8eef4;border:0;border-radius:20px;padding:8px 14px;margin-right:6px}.tabs button.on{background:#3d8bd1}small{color:#9fb3c8}.nav{display:flex;gap:6px;margin:12px 0}.nav button{flex:1;background:#24303d;color:#e8eef4;border:0;border-radius:10px;padding:10px;font-size:15px}.nav button.on{background:#3d8bd1}
+.mh{display:flex;justify-content:space-between;align-items:center;margin:8px 0}.mh button{background:#24303d;color:#e8eef4;border:0;border-radius:8px;padding:6px 12px;font-size:18px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.dow{font-size:11px;color:#9fb3c8;text-align:center}.d{background:#1b2633;border-radius:8px;min-height:62px;padding:4px;font-size:10px;line-height:1.35}.d .n{font-weight:600;font-size:12px}.d.off{opacity:.25}.d.today{outline:2px solid #3d8bd1}.d.step{background:#2d4a33}.g{color:#e9b872}.c{color:#7fc8f8}.legend{font-size:12px;color:#9fb3c8;margin-top:8px}
+#det{margin-top:10px}</style></head><body>
 <h1>Peptide Schedule</h1><div class="tag">Daily, before bed · started Oct 17, 2026 · U-100 syringe</div>
-<div class="card" id="today"></div>
+<div class="nav"><button class="on" onclick="view('sched',this)">Schedule</button><button onclick="view('cal',this)">Calendar</button></div>
+<div id="sched"><div class="card" id="today"></div>
 <div class="tabs"><button class="on" onclick="show('ghk',this)">GHK-Cu</button><button onclick="show('cjc',this)">CJC/Ipamorelin</button></div>
 <div id="ghk" class="card"><b>GHK-Cu</b> <small>50 mg + 2 mL = 25 mg/mL</small>
 <div class="row" data-s="2026-10-17" data-e="2026-11-13"><span>Wk 1–4 · Oct 17–Nov 13</span><span>1.0 mg · 4 u</span></div>
@@ -21,4 +25,33 @@ document.querySelectorAll('#cjc .row').forEach(r=>{if(iso>=r.dataset.s&&iso<=r.d
 document.querySelectorAll('#ghk .row').forEach(r=>{if(iso>=r.dataset.s&&iso<=r.dataset.e){r.classList.add('now');txt=r.lastElementChild.textContent}});
 const day=Math.floor((t-new Date('2026-10-17T00:00:00'))/864e5)+1;
 document.getElementById('today').innerHTML='<b>Tonight</b> · Day '+day+'<br>GHK-Cu: '+txt+'<br>CJC/Ipamorelin: '+txt2;
-</script></body></html>
+</script></div>
+<div id="cal" style="display:none"><div class="card"><div class="mh"><button onclick="mv(-1)">‹</button><b id="mt"></b><button onclick="mv(1)">›</button></div>
+<div class="grid" id="grid"></div>
+<div class="legend"><span class="g">G</span> GHK-Cu units · <span class="c">C</span> CJC/Ipa units · green = dose goes up · tap a day for details</div>
+<div id="det" class="card" style="display:none"></div></div></div>
+<script>
+const START=new Date(2026,9,17);
+const G=[["2026-10-17","2026-11-13",4,"1.0 mg"],["2026-11-14","2026-12-11",6,"1.5 mg"],["2026-12-12","2099-01-01",8,"2.0 mg"]];
+const C=[["2026-10-17","2026-10-30","4","100 mcg"],["2026-10-31","2026-11-13","6","150 mcg"],["2026-11-14","2026-11-27","8","200 mcg"],["2026-11-28","2026-12-25","10–12","250–300 mcg"]];
+const STEPS=["2026-10-31","2026-11-14","2026-11-28","2026-12-12"];
+function k(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function f(arr,s){for(const r of arr)if(s>=r[0]&&s<=r[1])return r;return null}
+let cm=new Date();cm=new Date(cm.getFullYear(),cm.getMonth(),1);
+function view(v,b){document.getElementById('sched').style.display=v=='sched'?'block':'none';document.getElementById('cal').style.display=v=='cal'?'block':'none';document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));b.classList.add('on');if(v=='cal')draw()}
+function mv(n){cm=new Date(cm.getFullYear(),cm.getMonth()+n,1);draw()}
+function draw(){const g=document.getElementById('grid');document.getElementById('mt').textContent=cm.toLocaleString('en-US',{month:'long',year:'numeric'});
+let h=['S','M','T','W','T','F','S'].map(x=>'<div class="dow">'+x+'</div>').join('');
+for(let i=0;i<cm.getDay();i++)h+='<div></div>';
+const dim=new Date(cm.getFullYear(),cm.getMonth()+1,0).getDate(),tk=k(new Date());
+for(let d=1;d<=dim;d++){const dt=new Date(cm.getFullYear(),cm.getMonth(),d),s=k(dt),gr=f(G,s),cr=f(C,s);
+let cls='d'+(dt<START||(!gr&&!cr)?' off':'')+(s==tk?' today':'')+(STEPS.includes(s)?' step':'');
+h+='<div class="'+cls+'" onclick="det(\''+s+'\')"><div class="n">'+d+'</div>'+(gr&&dt>=START?'<div class="g">G '+gr[2]+'u</div>':'')+(cr&&dt>=START?'<div class="c">C '+cr[2]+'u</div>':'')+'</div>'}
+g.innerHTML=h;document.getElementById('det').style.display='none'}
+function det(s){const dt=new Date(s+'T12:00:00');if(dt<START)return;const gr=f(G,s),cr=f(C,s),day=Math.floor((dt-START)/864e5)+1;
+let h='<b>'+dt.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})+'</b> · Day '+day+' · before bed<br>';
+h+=gr?'GHK-Cu: '+gr[3]+' · '+gr[2]+' units<br>':'';h+=cr?'CJC/Ipamorelin: '+cr[3]+' each · '+cr[2]+' units':'CJC/Ipamorelin: past current plan';
+if(STEPS.includes(s))h+='<br><span style="color:#8fd19e">Dose goes up today</span>';
+const e=document.getElementById('det');e.innerHTML=h;e.style.display='block'}
+</script>
+</body></html>
